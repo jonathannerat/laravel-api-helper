@@ -1,0 +1,27 @@
+{
+    "name": "jonathannerat/laravel-api-helper",
+    "description": "A Laravel helper to quickly create API endpoints",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jonathannerat\\LaravelApiHelper\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jonathan Teran",
+            "email": "jonathan.nerat@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jonathannerat\\LaravelApiHelper\\ApiHelperServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0"
+    }
+}
