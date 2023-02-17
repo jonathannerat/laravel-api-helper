@@ -59,15 +59,14 @@ class ApiHelperResource extends JsonResource {
 
         if ($relationships) {
             foreach ($relationships as $rel) {
-                $relJson = json_decode($rel);
                 $name = $rel;
                 $columns = null;
                 $relationships = null;
 
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $name = $relJson->name;
-                    $columns = $relJson->columns ?? null;
-                    $relationships = $relJson->relationships ?? null;
+                if (is_array($rel)) {
+                    $name = $rel['name'];
+                    $columns = $rel['columns'] ?? null;
+                    $relationships = $rel['relationships'] ?? null;
                 } else {
                     if (strpos($rel, ':') !== false) {
                         $columns = str($rel)->after(':')->explode(',')->toArray();

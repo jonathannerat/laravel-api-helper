@@ -107,19 +107,17 @@ class ApiHelperController extends BaseController
      * The later supports filters to be passed to the relationship, in case it applies
      *
      * @param EloquentBuilder $query Target query builder
-     * @param string[] $relationships Relationships to load
+     * @param (string|array)[] $relationships Relationships to load
      */
     protected function loadRelationships($query, $relationships)
     {
         foreach ($relationships as $rel) {
-            $relJson = json_decode($rel);
-
-            if (json_last_error() === JSON_ERROR_NONE) {
+            if (is_array($rel)) {
                 $query->with(
-                    $relJson->name,
-                    fn($q) => $this->selectColumns($q, $relJson->columns ?? [])
-                        ->applyFilters($q, $relJson->filters ?? [])
-                        ->loadRelationships($q, $relJson->relationships ?? [])
+                    $rel['name'],
+                    fn($q) => $this->selectColumns($q, $rel['columns'] ?? [])
+                        ->applyFilters($q, $rel['filters'] ?? [])
+                        ->loadRelationships($q, $rel['relationships'] ?? [])
                 );
             } else {
                 $query->with($rel);
@@ -196,13 +194,11 @@ class ApiHelperController extends BaseController
                 continue;
             }
 
-            $filter =
-                $filter instanceof stdClass ? $filter : json_decode($filter);
-            $type = $filter?->type;
+            $type = $filter['type'] ?? false;
             $opName = self::FILTER_NAMES[$nextOp][$type ?: 'where'];
 
             if ($type) {
-                $query->{$opName}(...$filter->args);
+                $query->{$opName}(...$filter['args']);
             } else {
                 $query->{$opName}(fn($q) => $this->applyFilters($q, $filter));
             }
